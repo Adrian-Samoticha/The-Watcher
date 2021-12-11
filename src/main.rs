@@ -9,8 +9,8 @@ fn main() {
     let path = args.value_of("PATH").unwrap_or(".");
     let command = args.value_of("COMMAND").unwrap_or("");
     let delay_in_ms = args.value_of("delay").unwrap_or("150").parse::<u64>().unwrap_or_else(|_| {
-        println!("Invalid delay value \"{}\". Defaulting to 150.", args.value_of("delay").unwrap());
-        150
+        println!("Error: Invalid delay value \"{}\".", args.value_of("delay").unwrap());
+        std::process::exit(1);
     });
     let quiet = args.is_present("quiet");
     
