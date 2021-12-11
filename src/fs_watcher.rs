@@ -4,6 +4,7 @@ use notify::watcher;
 use std::time::Duration;
 use std::sync::mpsc::channel;
 
+/// Arguments for the watch function.
 pub struct WatchArgs<'a> {
 	path: &'a str,
 	delay: Duration,
@@ -57,6 +58,10 @@ impl WatchArgs<'_> {
 	}
 }
 
+/// Watches a file or directory for changes.
+/// When a chnage is detected, the callback is called.
+/// The calling of the callback is delayed by the specified delay.
+/// If an error occurs while watching, the on_watch_error callback is called.
 pub fn watch(mut args: WatchArgs) -> std::result::Result<(), notify::Error> {
 	use notify::{RecursiveMode, Watcher};
 

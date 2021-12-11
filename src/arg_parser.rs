@@ -1,6 +1,7 @@
 extern crate clap;
 use clap::{Arg, App};
 
+/// Gets the command line arguments
 pub fn get_matches() -> clap::ArgMatches<'static> {
     App::new("The Watcher")
             .version("0.1.0")
