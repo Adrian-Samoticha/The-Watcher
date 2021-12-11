@@ -22,15 +22,6 @@ impl WatchArgs<'_> {
 		}
 	}
 	
-	pub fn new(path: &str, delay: Duration, callback: Box<dyn FnMut(notify::DebouncedEvent)>, on_watch_error: Box<dyn Fn(std::sync::mpsc::RecvError)>) -> WatchArgs<'_> {
-		WatchArgs {
-			path,
-			delay,
-			callback,
-			on_watch_error,
-		}
-	}
-	
 	pub fn with_path(self, path: &str) -> WatchArgs {
 		WatchArgs {
 			path,
