@@ -12,7 +12,7 @@ fn main() {
         println!("Invalid delay value \"{}\". Defaulting to 150.", args.value_of("delay").unwrap());
         150
     });
-    let verbose = args.is_present("verbose");
+    let quiet = args.is_present("quiet");
     
     let mut command = command_parser::parse_command(command);
     
@@ -20,7 +20,7 @@ fn main() {
         .with_path(path)
         .with_delay(Duration::from_millis(delay_in_ms))
         .with_callback(move |event| {
-            if verbose {
+            if !quiet {
                 println!("Event triggered: {:?}", event);
             }
             
@@ -35,5 +35,6 @@ fn main() {
     let watch_result = fs_watcher::watch(watch_args);
     if watch_result.is_err() {
         eprintln!("Error: {:?}", watch_result.err().unwrap().to_string());
+        std::process::exit(1);
     }
 }

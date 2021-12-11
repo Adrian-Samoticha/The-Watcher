@@ -22,9 +22,9 @@ pub fn get_matches() -> clap::ArgMatches<'static> {
                 .help("The command to be executed when a file or directory change is detected")
                 .required(true)
                 .index(2))
-            .arg(Arg::with_name("verbose")
-                .short("v")
-                .long("verbose")
-                .help("Enables verbose output"))
+            .arg(Arg::with_name("quiet")
+                .short("q")
+                .long("quiet")
+                .help("Disables output to stdout"))
             .get_matches()
 }
