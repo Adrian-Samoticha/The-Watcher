@@ -12,6 +12,7 @@ fn main() {
         println!("Invalid delay value \"{}\". Defaulting to 150.", args.value_of("delay").unwrap());
         150
     });
+    let verbose = args.is_present("verbose");
     
     let mut command = command_parser::parse_command(command);
     
@@ -19,7 +20,9 @@ fn main() {
         .with_path(path)
         .with_delay(Duration::from_millis(delay_in_ms))
         .with_callback(move |event| {
-            println!("{:?}", event);
+            if verbose {
+                println!("Event triggered: {:?}", event);
+            }
             
             let result = command.spawn();
             if result.is_err() {
