@@ -1,14 +1,23 @@
 mod fs_watcher;
+mod arg_parser;
 
 use std::process::Command;
 use std::time::Duration;
 
 fn main() {
-    let mut command = Command::new("ls");
+    let args = arg_parser::get_matches();
+    let path = args.value_of("PATH").unwrap_or(".");
+    let command = args.value_of("COMMAND").unwrap_or("");
+    let delay_in_ms = args.value_of("delay").unwrap_or("150").parse::<u64>().unwrap_or_else(|_| {
+        println!("Invalid delay value \"{}\". Defaulting to 150.", args.value_of("delay").unwrap());
+        150
+    });
+    
+    let mut command = Command::new(command);
     
     let watch_args = fs_watcher::WatchArgs::default()
-        .with_path("./dir")
-        .with_delay(Duration::from_millis(150))
+        .with_path(path)
+        .with_delay(Duration::from_millis(delay_in_ms))
         .with_callback(move |event| {
             println!("{:?}", event);
             
