@@ -1,7 +1,7 @@
 mod fs_watcher;
 mod arg_parser;
+mod command_parser;
 
-use std::process::Command;
 use std::time::Duration;
 
 fn main() {
@@ -13,7 +13,7 @@ fn main() {
         150
     });
     
-    let mut command = Command::new(command);
+    let mut command = command_parser::parse_command(command);
     
     let watch_args = fs_watcher::WatchArgs::default()
         .with_path(path)
