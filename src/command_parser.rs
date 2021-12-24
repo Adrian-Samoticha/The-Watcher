@@ -58,7 +58,10 @@ impl CmdList {
                     }
                 }
                 Cmd::Cd(ref path) => {
-                    env::set_current_dir(path).unwrap();
+                    env::set_current_dir(path).unwrap_or_else(|error| {
+                        eprintln!("Error: Failed to change directory to \"{}\". Error: {:?}", path.display(), error);
+                        std::process::exit(1);
+                    });
                     previous_command = None;
                 }
                 Cmd::Exit => {
