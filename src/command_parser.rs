@@ -98,7 +98,7 @@ fn parse_command(command: &str) -> Command {
 
 /// Receives a list of commands separated by pipe characters and parses it into a PipedCmdList.
 pub fn parse_piped_command(command: &str) -> CmdList {
-    let mut piped_cmd_list = CmdList::new();
+    let mut cmd_list = CmdList::new();
     let commands = command.split("|").map(|x| x.trim());
     
     for cmd in commands {
@@ -108,16 +108,16 @@ pub fn parse_piped_command(command: &str) -> CmdList {
         
         if cmd.starts_with("cd ") {
             let path = cmd.split(" ").collect::<Vec<&str>>()[1];
-            piped_cmd_list.add_cd(Path::new(path).to_owned().into_boxed_path());
+            cmd_list.add_cd(Path::new(path).to_owned().into_boxed_path());
             continue;
         }
         
         if cmd.starts_with("exit ") {
-            piped_cmd_list.add_exit();
+            cmd_list.add_exit();
             continue;
         }
         
-        piped_cmd_list.add_cmd(Cmd::CommandStruct(parse_command(cmd)));
+        cmd_list.add_cmd(Cmd::CommandStruct(parse_command(cmd)));
     }
-    piped_cmd_list
+    cmd_list
 }
