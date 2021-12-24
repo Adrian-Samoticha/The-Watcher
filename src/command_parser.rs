@@ -5,7 +5,6 @@ use std::{process, env};
 pub enum Cmd {
     CommandStruct(Command),
     Cd(Box<Path>),
-    Exit,
 }
 
 pub struct CmdList {
@@ -25,10 +24,6 @@ impl CmdList {
     
     fn add_cd(&mut self, path: Box<Path>) {
         self.cmds.push(Cmd::Cd(path));
-    }
-    
-    fn add_exit(&mut self) {
-        self.cmds.push(Cmd::Exit);
     }
 
     pub fn execute(&mut self) {
@@ -69,9 +64,6 @@ impl CmdList {
                     });
                     previous_command = None;
                 }
-                Cmd::Exit => {
-                    process::exit(0);
-                }
             }
         }
     }
@@ -109,11 +101,6 @@ pub fn parse_piped_command(command: &str) -> CmdList {
         if cmd.starts_with("cd ") {
             let path = cmd.split(" ").collect::<Vec<&str>>()[1];
             cmd_list.add_cd(Path::new(path).to_owned().into_boxed_path());
-            continue;
-        }
-        
-        if cmd.starts_with("exit ") {
-            cmd_list.add_exit();
             continue;
         }
         
