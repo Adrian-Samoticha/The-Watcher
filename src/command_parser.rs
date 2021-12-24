@@ -88,7 +88,7 @@ fn parse_command(command: &str) -> Command {
     command_struct
 }
 
-/// Receives a list of commands separated by pipe characters and parses it into a PipedCmdList.
+/// Receives a list of commands separated by pipe characters and parses it into a CmdList.
 pub fn parse_piped_command(command: &str) -> CmdList {
     let mut cmd_list = CmdList::new();
     let commands = command.split("|").map(|x| x.trim());
