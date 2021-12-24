@@ -14,7 +14,7 @@ fn main() {
     });
     let quiet = args.is_present("quiet");
     
-    let mut command = command_parser::parse_command(command);
+    let mut piped_cmd_list = command_parser::parse_piped_command(command);
     
     let watch_args = fs_watcher::WatchArgs::default()
         .with_path(path)
@@ -24,10 +24,7 @@ fn main() {
                 println!("Event triggered: {:?}", event);
             }
             
-            let result = command.spawn();
-            if result.is_err() {
-                println!("Error: {:?}", result.err());
-            }
+            piped_cmd_list.execute();
         }).with_on_watch_error(|error| {
             eprintln!("Watch error: {:?}", error);
         });
