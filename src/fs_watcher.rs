@@ -57,7 +57,7 @@ pub fn watch(mut args: WatchArgs) -> std::result::Result<(), notify::Error> {
 	use notify::{RecursiveMode, Watcher};
 
 	let (tx, rx) = channel();
-	let mut watcher = watcher(tx, args.delay).unwrap();
+	let mut watcher = watcher(tx, args.delay)?;
 	let result = watcher.watch(args.path, RecursiveMode::Recursive);
 	
 	if result.is_err() {

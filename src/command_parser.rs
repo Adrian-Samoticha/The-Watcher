@@ -42,8 +42,13 @@ impl CmdList {
                             .stdout(process::Stdio::piped())
                             .spawn()
                     } else {
+                        let stdin = previous_command.map_or(
+                            Stdio::inherit(),
+                            |cmd: Child| Stdio::from(cmd.stdout.unwrap())
+                        );
+                        
                         command_struct
-                            .stdin(previous_command.map_or(Stdio::inherit(), |cmd: Child| Stdio::from(cmd.stdout.unwrap())))
+                            .stdin(stdin)
                             .spawn()
                     };
                     
@@ -82,7 +87,9 @@ fn parse_command(command: &str) -> Command {
         process::exit(1);
     }
     
-    let mut command_struct = Command::new(command_vec.next().unwrap());
+    let mut command_struct = Command::new(command_vec.next().unwrap_or_else(|| {
+        panic!("Error: Failed to parse command.");
+    }));
     for arg in command_vec {
         command_struct.arg(arg);
     }
