@@ -35,11 +35,11 @@ Watch a single file. No command is executed, but detected changes are printed to
 ```sh
 the-watcher -d 100 /path/to/file.txt "echo 'File changed'"
 ```
-Watch a single file and echo `'File changed'` when it is changed (after a 100 ms delay).
+Watch a single file and echo `File changed` when it is changed (after a 100 ms delay).
 
 <br>
 
 ```sh
-the-watcher -q -d 500 /path/to/directory "cd /path/to/directory | ls . | pbcopy"
+the-watcher -q -d 500 /path/to/directory "cd /path/to/directory & ls . | pbcopy"
 ```
 Quietly watch an entire directory, `cd` into it and copy the output of `ls .` to the clipboard (using the macOS-only `pbcopy` command) when a change is detected (after a 500 ms delay).

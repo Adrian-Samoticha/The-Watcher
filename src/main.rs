@@ -1,6 +1,7 @@
 mod fs_watcher;
 mod arg_parser;
 mod command_parser;
+mod string_split_iterator;
 
 use std::time::Duration;
 

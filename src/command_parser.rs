@@ -2,6 +2,8 @@ use std::path::Path;
 use std::process::{Command, Stdio, Child};
 use std::{process, env};
 
+use crate::string_split_iterator::{StringSplitIterator, StringSplit};
+
 pub enum Cmd {
     CommandStruct(Command),
     Cd(Box<Path>),
@@ -72,17 +74,19 @@ impl CmdList {
 
 /// Receives a command as a string and parses it into a Command struct.
 fn parse_command(command: &str) -> Command {
-    let mut command_vec = command.split_whitespace().peekable();
+    let mut split_command = StringSplitIterator::new(command, &[' '], &['"', '\''])
+        .map(|x| x.string)
+        .peekable();
     
-    if command_vec.peek().is_none() {
+    if split_command.peek().is_none() {
         eprintln!("Error: No command given.");
         process::exit(1);
     }
     
-    let mut command_struct = Command::new(command_vec.next().unwrap_or_else(|| {
+    let mut command_struct = Command::new(split_command.next().unwrap_or_else(|| {
         panic!("Error: Failed to parse command.");
     }));
-    for arg in command_vec {
+    for arg in split_command {
         command_struct.arg(arg);
     }
     command_struct
@@ -91,20 +95,32 @@ fn parse_command(command: &str) -> Command {
 /// Receives a list of commands separated by pipe characters and parses it into a CmdList.
 pub fn parse_piped_command(command: &str) -> CmdList {
     let mut cmd_list = CmdList::new();
-    let commands = command.split("|").map(|x| x.trim());
+    let commands = StringSplitIterator::new(
+        command,
+        &['|', '&'],
+        &['"', '\'']
+    ).map(|string_split| StringSplit {
+        string: string_split.string.trim(),
+        left_delimiter: string_split.left_delimiter,
+        right_delimiter: string_split.right_delimiter,
+    });
     
     for cmd in commands {
-        if cmd.is_empty() {
+        if cmd.string.is_empty() {
             continue;
         }
         
-        if cmd.starts_with("cd ") {
-            let path = cmd.split(" ").collect::<Vec<&str>>()[1];
+        if cmd.string.starts_with("cd ") {
+            let path = {
+              StringSplitIterator::new(cmd.string, &[' '], &['"', '\''])
+                .collect::<Vec<StringSplit>>()[1]
+                .string
+            };
             cmd_list.add_cd(Path::new(path).to_owned().into_boxed_path());
             continue;
         }
         
-        cmd_list.add_cmd(Cmd::CommandStruct(parse_command(cmd)));
+        cmd_list.add_cmd(Cmd::CommandStruct(parse_command(cmd.string)));
     }
     cmd_list
 }
