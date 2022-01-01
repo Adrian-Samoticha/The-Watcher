@@ -60,7 +60,7 @@ impl<'a> Iterator for StringSplitIterator<'a> {
             self.pos
         };
         
-        if from == to {
+        if self.pos > self.string.len() {
             return None;
         }
         
