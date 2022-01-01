@@ -103,13 +103,9 @@ pub fn parse_piped_command(command: &str) -> CmdList {
         string: string_split.string.trim(),
         left_delimiter: string_split.left_delimiter,
         right_delimiter: string_split.right_delimiter,
-    });
+    }).filter(|string_split| !string_split.string.is_empty());
     
     for cmd in commands {
-        if cmd.string.is_empty() {
-            continue;
-        }
-        
         if cmd.string.starts_with("cd ") {
             let path = {
               StringSplitIterator::new(cmd.string, &[' '], &['"', '\''])
